@@ -11,7 +11,7 @@ public class LargeService
     {
         _factory = factory;
     }
-
+    
     public async Task<IQueryable<UserData>> GetUsers()
     {
         await using var context = await _factory.CreateDbContextAsync();
@@ -24,6 +24,38 @@ public class LargeService
                 Name = user.Name,
                 Followers = user.Followers.Count()
             }).ToListAsync();
+
+        return results.AsQueryable();
+    }
+    
+    public async Task<IQueryable<UserData>> GetUsersNoToList()
+    {
+        await using var context = await _factory.CreateDbContextAsync();
+
+        var results = context.Users
+            .Include(f => f.Follows)
+            .Include(f => f.Followers)
+            .Select(user => new UserData
+            {
+                Name = user.Name,
+                Followers = user.Followers.Count()
+            });
+
+        return results.AsQueryable();
+    }
+    
+    public async Task<IQueryable<UserData>> GetUsersNoDispose()
+    {
+        var context = await _factory.CreateDbContextAsync();
+
+        var results = context.Users
+            .Include(f => f.Follows)
+            .Include(f => f.Followers)
+            .Select(user => new UserData
+            {
+                Name = user.Name,
+                Followers = user.Followers.Count()
+            });
 
         return results.AsQueryable();
     }

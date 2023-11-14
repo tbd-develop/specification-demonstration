@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
+      <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="7.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
@@ -19,10 +21,6 @@
       <Content Include="appsettings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Specifications\" />
     </ItemGroup>
 
 </Project>
