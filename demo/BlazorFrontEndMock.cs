@@ -1,4 +1,5 @@
-﻿using demo.Infrastructure;
+﻿using System.Diagnostics;
+using demo.Infrastructure;
 
 namespace demo;
 
@@ -15,11 +16,15 @@ public class BlazorFrontEndMock
 
     public async Task GetUsersWithFollowerCount()
     {
+        Debug.WriteLine("Query 1");
+        
         _users = await _largeService.GetUsersNoDispose();
     }
 
     public IQueryable<UserData> ShowUsers(string nameFilter)
     {
+        Debug.WriteLine("Query 2");
+        
         _filteredUsers = _users;
 
         if (!string.IsNullOrWhiteSpace(nameFilter))
