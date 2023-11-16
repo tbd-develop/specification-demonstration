@@ -11,7 +11,7 @@ public class LargeService
     {
         _factory = factory;
     }
-    
+
     public async Task<IQueryable<UserData>> GetUsers()
     {
         await using var context = await _factory.CreateDbContextAsync();
@@ -27,7 +27,7 @@ public class LargeService
 
         return results.AsQueryable();
     }
-    
+
     public async Task<IQueryable<UserData>> GetUsersNoToList()
     {
         await using var context = await _factory.CreateDbContextAsync();
@@ -43,9 +43,11 @@ public class LargeService
 
         return results.AsQueryable();
     }
-    
+
     public async Task<IQueryable<UserData>> GetUsersNoDispose()
     {
+        Console.WriteLine("Getting Users With No Dispose");
+        
         var context = await _factory.CreateDbContextAsync();
 
         var results = context.Users

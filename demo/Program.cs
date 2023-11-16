@@ -32,6 +32,7 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<LargeService>();
         services.AddTransient<DoWorkWithLargeService>();
         services.AddTransient<DoWorkWithRepositories>();
+        services.AddTransient<BlazorFrontEndMock>();
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -40,29 +41,7 @@ using var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-// Current Version - Uncomment to run
 
-// var worker = host.Services.GetRequiredService<DoWorkWithLargeService>();
-//
-// await worker.GetUsersWithFollowerCount();
-//
-// await worker.GetUsersWithFollowerCountNoToList();
-//
-// await worker.GetUsersWithFollowerCountNoDispose();
-
-// Improved using specs - Uncomment to run
-
-// var simpler = host.Services.GetRequiredService<DoWorkWithRepositories>();
-//
-// await simpler.GetUsersWithFollowerCount();
-//
-// await simpler.GetUsersFollowerCountProjection();
-//
-// await simpler.GetUsersWhoFollowMe();
-
-// Improved using MediatR and Specs and Result
-
-var mediator = host.Services.GetRequiredService<IMediator>();
 var output = (IEnumerable<UserData> userData) =>
 {
     foreach (var user in userData)
@@ -71,20 +50,77 @@ var output = (IEnumerable<UserData> userData) =>
     }
 };
 
-// All users
-var result = await mediator.Send(new GetUsersWithFollowCount.Query());
+// Current Version - Uncomment to run
 
-if (result.IsSuccess)
-{
-    output(result.Value);
-}
+//await DoWorkHowAsItsUsedNow();
 
-var filtered = await mediator.Send(new GetUsersWithFollowCount.Query("Bob"));
+// Improved using specs - Uncomment to run
 
-if (filtered.IsSuccess)
-{
-    output(filtered.Value);
-}
+//await DoWorkWithSpecs();
 
+// Improved using MediatR and Specs and Result
+
+//await DoWorkWithMediator();
+
+// Verify Blazor Behavior of manipulating connection
+
+await DemonstrateRetrievingFilteredData();
 
 await host.RunAsync();
+
+async Task DoWorkHowAsItsUsedNow()
+{
+    var worker = host.Services.GetRequiredService<DoWorkWithLargeService>();
+
+    await worker.GetUsersWithFollowerCount();
+
+    await worker.GetUsersWithFollowerCountNoToList();
+
+    await worker.GetUsersWithFollowerCountNoDispose();
+}
+
+async Task DoWorkWithSpecs()
+{
+    var simpler = host.Services.GetRequiredService<DoWorkWithRepositories>();
+
+    await simpler.GetUsersWithFollowerCount();
+
+    await simpler.GetUsersFollowerCountProjection();
+
+    await simpler.GetUsersWhoFollowMe();
+}
+
+async Task DoWorkWithMediator()
+{
+    var mediator = host.Services.GetRequiredService<IMediator>();
+
+// All users
+    var result = await mediator.Send(new GetUsersWithFollowCount.Query());
+
+    if (result.IsSuccess)
+    {
+        output(result.Value);
+    }
+
+    var filtered = await mediator.Send(new GetUsersWithFollowCount.Query("Bob"));
+
+    if (filtered.IsSuccess)
+    {
+        output(filtered.Value);
+    }
+}
+
+async Task DemonstrateRetrievingFilteredData()
+{
+    var blazor = host.Services.GetRequiredService<BlazorFrontEndMock>();
+
+    await blazor.GetUsersWithFollowerCount(); // Pull the full data set 
+
+    var users = blazor.ShowUsers(string.Empty);
+
+    output(users);
+
+    var filtered = blazor.ShowUsers("Bob");
+
+    output(users);
+}
