@@ -1,4 +1,5 @@
 ﻿using demo.Data;
+using demo.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace demo.Infrastructure;
@@ -60,6 +61,17 @@ public class LargeService
             });
 
         return results.AsQueryable();
+    }
+
+    public async Task<DbSet<User>> GetUsersDbSetWithNoDispose()
+    {
+        Console.WriteLine("Getting Users With No Dispose");
+        
+        var context = await _factory.CreateDbContextAsync();
+
+        var results = context.Users;
+
+        return results;
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using demo.Data.Models;
 using demo.Infrastructure;
 
 namespace demo;
@@ -6,8 +7,8 @@ namespace demo;
 public class BlazorFrontEndMock
 {
     private readonly LargeService _largeService;
-    private IQueryable<UserData> _users = null!;
-    private IQueryable<UserData> _filteredUsers = null!;
+    private IQueryable<User> _users = null!;
+    private IQueryable<User> _filteredUsers = null!;
 
     public BlazorFrontEndMock(LargeService largeService)
     {
@@ -18,10 +19,10 @@ public class BlazorFrontEndMock
     {
         Debug.WriteLine("Query 1");
         
-        _users = await _largeService.GetUsersNoDispose();
+        _users = (await _largeService.GetUsersDbSetWithNoDispose()).AsQueryable();
     }
 
-    public IQueryable<UserData> ShowUsers(string nameFilter)
+    public IQueryable<User> ShowUsers(string nameFilter)
     {
         Debug.WriteLine("Query 2");
         

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Ardalis.Result;
 using demo;
 using demo.Data;
+using demo.Data.Models;
 using demo.Infrastructure;
 using demo.Infrastructure.Contracts;
 using demo.Queries;
@@ -47,6 +48,14 @@ var output = (IEnumerable<UserData> userData) =>
     foreach (var user in userData)
     {
         Console.WriteLine($"{user.Name} has {user.Followers} followers");
+    }
+};
+
+var showUsers = (IEnumerable<User> userData) =>
+{
+    foreach (var user in userData)
+    {
+        Console.WriteLine($"{user.Name}");
     }
 };
 
@@ -118,9 +127,9 @@ async Task DemonstrateRetrievingFilteredData()
 
     var users = blazor.ShowUsers(string.Empty);
 
-    output(users);
+    showUsers(users);
 
     var filtered = blazor.ShowUsers("Bob");
 
-    output(users);
+    showUsers(users);
 }
