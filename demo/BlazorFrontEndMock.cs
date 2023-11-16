@@ -29,7 +29,7 @@ public class BlazorFrontEndMock
 
         if (!string.IsNullOrWhiteSpace(nameFilter))
         {
-            _filteredUsers = _filteredUsers.Where(x => x.Name.Contains(nameFilter));
+            _filteredUsers = _filteredUsers.Where(x => x.Name.Contains(nameFilter, StringComparison.CurrentCultureIgnoreCase));
         }
 
         return _filteredUsers;
